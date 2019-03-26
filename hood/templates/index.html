@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {% if user.is_authenticated %}
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <div class="form-group">
+                        <input type="submit" value="Post">
+                    </div>
+                </form>
+                <hr>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {% for status in statuses %}
+            <div class="row home-statuses">
+                <div class="col-md-12">
+                    <p><a href="/profile/{{status.user.username}}/">{{status.user.username}}</a></p>
+                    <p>{{status.status_content}}</p>
+                    <p class="small"> {{status.date_posted|timesince}} </p>
+                </div>
+            </div>
+            {% empty %}
+            <h4 class="text-center">No statuses for this Hood <br>Start posting...</h4>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
