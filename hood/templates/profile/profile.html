@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block styles %}
+{{block.super}}
+{% endblock %}
+
+{% block content %}
+<div class="container top-section">
+    <div class="row">
+        <div class="col-md-12 profile-head">
+            <a href="">
+                {% if profile.user_upic %}
+                <img src="{{profile.user_upic.cdn_url}}" alt="Profile Picture" class="img-circle">
+                {% else %}
+                <img src="/static/img/avatah.png" alt="">
+                {% endif %}
+            </a>
+        </div>
+    </div>
+</div>
+<div class="container top-section">
+    <div class="row profile-body">
+        <div class="col-md-4">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'profile' username=profile.user.username %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'bio' username=profile.user.username %}">
+                        {% if user.username == profile.user.username %}
+                            Edit Bio
+                        {% else %}
+                            Bio
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'business' username=profile.user.username %}">
+                        {% if user.username == profile.user.username %}
+                            Add Business
+                        {% else %}
+                            Business
+                        {% endif %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-8 profile-status">
+            {% if user.username == profile.user.username %}
+                {% if profile.user_hood.name|length == 0 %}
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h4>Set up your hood to make posts</h4>
+                    </div>
+                </div>
+                {% else %}
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <div class="form-group">
+                        <input type="submit" value="Post">
+                    </div>
+                </form>
+                {% endif %}
+                <hr>
+            {% endif %}
+
+            {% for status in statuses %}
+            <div class="row">
+                <div class="col-12">
+                    <p>{{status.status_content}}</p>
+                    <p class="small"> {{status.date_posted|timesince}} </p>
+                </div>
+            </div>
+            <hr>
+            {% empty %}
+            <h4 class="text-center">No statuses for this user</h4>
+            {% endfor %}
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
