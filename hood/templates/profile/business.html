@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block styles %}
+{{block.super}}
+{% endblock %}
+
+{% block content %}
+<div class="container top-section">
+    <div class="row">
+        <div class="col-md-12 profile-head">
+            <a href="">
+                {% if profile.user_upic %}
+                <img src="{{profile.user_upic.cdn_url}}" alt="Profile Picture" class="img-circle">
+                {% else %}
+                <img src="/static/img/avatah.png" alt="">
+                {% endif %}
+            </a>
+        </div>
+    </div>
+</div>
+<div class="container top-section">
+    <div class="row profile-body">
+        <div class="col-md-4">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'profile' username=profile.user.username %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'bio' username=profile.user.username %}">
+                        {% if user.username == profile.user.username %}
+                            Edit Bio
+                        {% else %}
+                            Bio
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'business' username=profile.user.username %}">
+                        {% if user.username == profile.user.username %}
+                            Add Business
+                        {% else %}
+                            Business
+                        {% endif %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-8 profile-status">
+            <div class="row">
+                {% for business in businesses %}
+                <div class="col-md-12">
+                    <a href="">
+                        <p>{{business.business_name}}</p>
+                        <p>Location: {{business.business_hood.name}}</p>
+                        <p class="small">Date Added: {{business.date_added}}</p>
+                    </a>
+                    <hr>
+                </div>
+                {% empty %}
+                <div class="col-md-12 text-center">
+                    <h3>User has no businesses</h3>
+                </div>
+                {% endfor %}
+                <div class="col-md-12">
+                    <a class="btn btn-link" data-toggle="modal" data-target="#exampleModalCenter">Add Business</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Set up Hood</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form id="business" action="{% url 'new_business' %}" method="POST">
+                                {% csrf_token %}
+                                {% bootstrap_form form %}
+                                <div class="form-group">
+                                    <input type="submit" value="Add Business">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
